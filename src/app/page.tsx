@@ -36,23 +36,74 @@ export default function Home({ children }: Props) {
     console.log('Edited');
   };
 
+  const handleUpdate = (id: string, payload: any) => {
+    console.log('Updated!');
+    editTodo(id, payload);
+  };
+
   const handleComplete = (id: string) => {
     console.log('Completed');
+    handleUpdate(id, { done: true });
   };
 
   const handleDelete = (id: string) => {
     console.log('Deleted');
+    deleteTodo(id);
   };
 
   async function fetchTodos() {
+    const requestOptions = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    };
     const data: any = await (
       await fetch(
-        "http://localhost:8000/api/v1/todos"
+        'http://localhost:8000/api/v1/todos',
+        requestOptions
       )
     ).json();
 
     setItems(data?.todos);
-  }
+  };
+
+  async function editTodo(id: string, payload: any) {
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload })
+    };
+    const data: any = await (
+      await fetch(
+        `http://localhost:8000/api/v1/todos/${id}`,
+        requestOptions
+      )
+    ).json();
+
+    if (data?.status === 201) {
+      fetchTodos();
+    } else {
+      // Error
+    };
+  };
+
+  async function deleteTodo(id: string) {
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    };
+    const data: any = await (
+      await fetch(
+        `http://localhost:8000/api/v1/todos/${id}`,
+        requestOptions
+      )
+    ).json();
+
+    if (data?.status === 201) {
+      fetchTodos();
+    } else {
+      // Error
+    };
+  };
 
   // Component Blocks
   const TaskCard = (
