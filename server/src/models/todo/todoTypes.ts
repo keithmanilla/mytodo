@@ -5,4 +5,5 @@ export interface TodoTypes {
     description?: string;
     owner: ObjectId;
     position: number;
+    done: boolean;
 }
