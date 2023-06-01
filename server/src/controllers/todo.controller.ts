@@ -60,14 +60,68 @@ import { ObjectId } from "bson";
             todos: [],
         });
     };
-  } catch (err) {
-    console.error('Status 500 -> ',err);
+  } catch (error) {
+    console.error('Status 500 -> ',error);
     return res.status(500).send({
         status: 500,
-        err
+        error
     });
   };
 };
+
+/**
+ * Create Todo
+ */
+export const createTodo = async (req: Request, res: Response) => {
+    try { 
+        const payload = _.get(req, 'body');
+        const userId: string | undefined = '6478d420475bfba774f84163'; // _.get(req, 'user.id');
+        const user: any | undefined = await UserModel.findOne({ _id: new ObjectId(`${userId}`) });
+    
+        // Return 404 Error if User Record was not found.
+        if (!user) {
+            // FIXME: Props.
+            return res.status(404).send({
+                status: 404,
+                message: 'User record not found.',
+                error: {
+                    value: 'USER_NOT_FOUND',
+                    message: 'User may have been deleted or record has been corrupted.'
+                },
+            });
+        };
+  
+      // FIXME: Props.
+        const newTodo: any = await new TodoModel({
+            ...payload
+        }).save();
+    
+        if (newTodo) {
+            return res.status(201).send({
+                status: 201,
+                message: 'Successfully created todo record.',
+                error: {},
+                todo: newTodo,
+            });
+        } else {
+            return res.status(400).send({
+                status: 400,
+                message: 'Unable to create record.',
+                error: {
+                    value: 'UNABLE_TO_CREATE',
+                    message: 'Unable to create record.'
+                },
+                todo: {},
+            });
+        };
+    } catch (error) {
+      console.error('Status 500 -> ',error);
+      return res.status(500).send({
+          status: 500,
+          error
+      });
+    };
+  };
 
 /**
  * Update Todo
@@ -122,11 +176,11 @@ export const updateTodoById = async (req: Request, res: Response) => {
                 todo: {},
             });
         };
-    } catch (err) {
-      console.error('Status 500 -> ',err);
+    } catch (error) {
+      console.error('Status 500 -> ', error);
       return res.status(500).send({
           status: 500,
-          err
+          error
       });
     };
   };
@@ -172,11 +226,11 @@ export const updateTodoById = async (req: Request, res: Response) => {
                 },
             });
         };
-    } catch (err) {
-      console.error('Status 500 -> ',err);
+    } catch (error) {
+      console.error('Status 500 -> ', error);
       return res.status(500).send({
           status: 500,
-          err
+          error
       });
     };
   };
