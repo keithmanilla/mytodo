@@ -1,0 +1,30 @@
+{
+    "name": "mytodo-api",
+    "version": "1.0.0",
+    "description": "The backend of the TODO App.",
+    "main": "build/index.js",
+    "scripts": {
+        "test": "",
+        "build": "tsc",
+        "start": "nodemon --watch './**/*.ts' --exec 'ts-node' src/index.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "",
+    "dependencies": {
+        "@types/cors": "^2.8.13",
+        "bson": "^5.3.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.2",
+        "lodash": "^4.17.21",
+        "mongodb": "^5.5.0",
+        "nodemon": "^2.0.22",
+        "ts-node": "^10.9.1",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.17",
+        "typescript": "^5.0.4"
+    }
+}
