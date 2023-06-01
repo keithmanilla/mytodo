@@ -93,8 +93,11 @@ export const createTodo = async (req: Request, res: Response) => {
   
       // FIXME: Props.
         const newTodo: any = await new TodoModel({
-            ...payload
+            ...payload,
+            owner: user?._id
         }).save();
+
+        console.log(newTodo);
     
         if (newTodo) {
             return res.status(201).send({
