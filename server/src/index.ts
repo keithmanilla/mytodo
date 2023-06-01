@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from "cors";
+import connect from './utilities/mongodb';
+import dbConnect from './utilities/mongodb';
 
-/**
- * Initializations.
- */
+// Initializations.
 const app = express();
 const port = 8000;
 
 // TODO: Connect to DB (MongoDB)
-
+dbConnect();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -22,7 +22,6 @@ app.use(
 		methods: "GET, POST, PUT, DELETE",
 	})
 );
-
 
 // TODO: Import Routes.
 
