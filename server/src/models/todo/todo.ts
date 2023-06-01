@@ -12,6 +12,10 @@ const TodoSchema = new Schema<TodoTypes>(
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+    position: {
+        type: Number,
+        default: 10
+    },
   },
   { timestamps: true }
 );

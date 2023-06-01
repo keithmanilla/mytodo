@@ -3,6 +3,9 @@ import cors from "cors";
 import connect from './utilities/mongodb';
 import dbConnect from './utilities/mongodb';
 
+// Import Routes.
+import TodoRoute from './routes/todo.routes';
+
 // Initializations.
 const app = express();
 const port = 8000;
@@ -23,7 +26,8 @@ app.use(
 	})
 );
 
-// TODO: Import Routes.
+// Todo Route.
+app.use('/api/v1/todos', TodoRoute);
 
 app.get('/', (req, res) => {
     res.send('TODO API IS RUNNING!');
