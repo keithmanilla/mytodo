@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllUserTodos } from "../controllers/todo.controller";
+import { deleteTodoById, getAllUserTodos, updateTodoById } from "../controllers/todo.controller";
 
  const router = Router();
 
@@ -7,5 +7,15 @@ import { getAllUserTodos } from "../controllers/todo.controller";
     "/",
     getAllUserTodos
  );
+
+ router.put(
+   "/:id",
+   updateTodoById
+ );
+
+ router.delete(
+   "/:id",
+   deleteTodoById
+ )
 
  export default router;

@@ -16,6 +16,10 @@ const TodoSchema = new Schema<TodoTypes>(
         type: Number,
         default: 10
     },
+    done: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
