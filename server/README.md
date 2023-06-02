@@ -1,6 +1,6 @@
 # My TODO API
 
-# How to Run:
+# How to Run the Server:
 ```bash
 cd server
 npm install
