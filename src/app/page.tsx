@@ -1,5 +1,5 @@
 "use client";
-import { addTaskContainer } from '@/components/addTaskContainer';
+import Modal from '@/components/modal';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
@@ -21,24 +21,53 @@ const items: any[] = [];
 
 export default function Home({ children }: Props) {
   // States
+  const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<any[]>([]);
   const [fetched, seFetched] = useState<boolean>(false);
+  const [editId, setEditId] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [requesting, setRequesting] = useState<boolean>(false);
+  const [formState, setFormState] = useState<string>('');
 
   useEffect(() => {
-    if (!fetched) {
+    if (!fetched && !requesting) {
       fetchTodos();
     }
   }, [fetched])
   
 
   // Functions
-  const handleEdit = (id: string) => {
-    console.log('Edited');
+  const handleCreate = () => {
+    console.log('Create');
+    if (title && !requesting) {
+      setRequesting(true);
+      createdTodo({ title, description })
+    }
+  };
+
+  const setEdit = () => {
+    setFormState('edit');
+    handleUpdate(editId, {title, description});
+  };
+
+  const handleEdit = (data: any) => {
+    console.log('Edited ', data);
+    setTitle(data?.title);
+    setDescription(data?.description);
+    setEditId(data?._id);
+    setOpen(true);
   };
 
   const handleUpdate = (id: string, payload: any) => {
     console.log('Updated!');
-    editTodo(id, payload);
+    if (title && !requesting) {
+      setRequesting(true);
+      editTodo(id, payload);
+    } else if (payload?.done && !requesting) {
+      setRequesting(true);
+      editTodo(id, payload);
+    }
   };
 
   const handleComplete = (id: string) => {
@@ -62,8 +91,36 @@ export default function Home({ children }: Props) {
         requestOptions
       )
     ).json();
+    setRequesting(false);
+    if (data?.status === 200) {
+      setItems(data?.todos);
+    } else {
+      //
+    }
+  };
 
-    setItems(data?.todos);
+  async function createdTodo(payload: any) {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload })
+    };
+    const data: any = await (
+      await fetch(
+        'http://localhost:8000/api/v1/todos',
+        requestOptions
+      )
+    ).json();
+
+    setRequesting(false);
+    if (data?.status === 201) {
+      setTitle('');
+      setDescription('');
+      setEditId('');
+      fetchTodos();
+    } else {
+      // Error
+    };
   };
 
   async function editTodo(id: string, payload: any) {
@@ -79,7 +136,11 @@ export default function Home({ children }: Props) {
       )
     ).json();
 
+    setRequesting(false);
     if (data?.status === 201) {
+      setTitle('');
+      setDescription('');
+      setEditId('');
       fetchTodos();
     } else {
       // Error
@@ -98,6 +159,7 @@ export default function Home({ children }: Props) {
       )
     ).json();
 
+    setRequesting(false);
     if (data?.status === 200) {
       fetchTodos();
     } else {
@@ -106,6 +168,86 @@ export default function Home({ children }: Props) {
   };
 
   // Component Blocks
+
+  const form = (status: string) => {
+    return (
+      <div>
+        <h3 className='text-2xl text-black capitalize my-4'>{status} Todo</h3>
+        <div className="sm:col-span-4">
+          <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+            Title
+          </label>
+          <div className="mt-2">
+            <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+              <input
+                type="text"
+                name="title"
+                id="title"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                placeholder=""
+                value={title || ''}
+                onChange={(e: any) => {
+                  setTitle(e?.target?.value);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-full" style={{ marginTop: 32 }}>
+          <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
+            Description
+          </label>
+          <div className="mt-2">
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              defaultValue={''}
+              placeholder=""
+              value={description || ''}
+              onChange={(e: any) => {
+                setDescription(e?.target?.value);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const addTaskContainer = () => {
+    return (
+      <div
+        className='rounded-lg'
+        style={{
+          marginBottom: 16,
+          width: 384,
+          height: 72,
+          color: '#FFFFFF',
+          border: '2px dashed rgba(255,255,255,0.5)',
+          flexDirection: 'column',
+          alignContent: 'center',
+          cursor: 'pointer'
+        }}
+        onClick={() => {
+          setFormState('add');
+          setOpen(true);
+        }}
+      >
+        <h5
+          className="mb-2 text-2xl text-center my-4 font-bold tracking-tight text-white-900 dark:text-white"
+          style={{
+            cursor: 'pointer'
+          }}
+        >
+          Add a new task
+        </h5>
+      </div>
+    );
+  };
+
   const TaskCard = (
     index: number,
     item: any
@@ -148,7 +290,10 @@ export default function Home({ children }: Props) {
                 className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
                     focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5
                     mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-                onClick={() => handleEdit(item?._id)}
+                onClick={() => {
+                  setFormState('edit');
+                  handleEdit(item);
+                }}
                 >
                 Edit
                 </button>
@@ -215,8 +360,7 @@ export default function Home({ children }: Props) {
           {addTaskContainer()}
         </div>
       </div>
-
-    
+      <Modal component={form(formState)} open={open} setOpen={setOpen} state={formState} create={handleCreate} edit={setEdit} />
     </main>
   )
 }
