@@ -1,5 +1,5 @@
 # My ToDo Web
-This is a TODO List Project using React Next.js as front end and Express.js as backend (REST API). A free MongoDB Atlas instance was used. An `.env` file was added in the codebase for quick preview. No `.env` files were used.
+This is a TODO List Project using React Next.js as front end and Express.js as backend (REST API). A free MongoDB Atlas instance was used.
 
 ### Tech Stacks:
 1. `Next.js React Framework` - I used the latest version to test the changes at the same time.
@@ -39,7 +39,4 @@ npm start
 
 The front end application will run in localhost port 3000 while the server will be in port 8000.
 
----
-### About Me
-I used the latest version of Next.js 13.4.x to check some of the new features. This is also my first time to use TailwindCSS and I added this "unfamiliar variables" with the time limit which I pushed down to 9 hours. I believe that coding should be fun and adding additional challenges makes it more exciting. At the same time, I believe that coding work should be well organized and readable. Documentation for me is a must. I have gone through code reviews of bad codes in the past which turned into a ridiculous "Reverse Engineering Work". If I had extra amount of time, I would have finished the extra features and created a Docsify or Docusaurus documentation portal for this project. But at the moment, the markdown files will at least suffice.
 
